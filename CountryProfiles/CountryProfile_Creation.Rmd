@@ -1,0 +1,48 @@
+---
+output: 
+  word_document:
+    reference_docx: Template.docx
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# `r Country` 
+Last updated on `r Sys.Date()`
+
+## Epidemic situation overview
+
+\newline
+
+```{r, fig.width=9, fig.height=6, echo=FALSE, warning=FALSE, comment=FALSE, message=FALSE}
+plot_grid(
+  plot_grid(
+    SpaguettiPlot(Country,'NewCases_Rate','Selection',ListCountries,'#00558F'),
+    SpaguettiPlot(Country,'NewDeaths_Rate','Selection',ListCountries,'#D86422'),
+    ggparagraph(text = paste0('Both charts above highlights ',Country,' against ', paste("'",as.character(ListCountries[ListCountries != Country]),"'",collapse=", ",sep="")), face = "italic", size = 11, color = "black"),nrow=3,rel_heights=c(5,5,1)),
+  ggtexttable(test,rows=NULL,theme = ttheme("mBlue")),
+  ncol=2)
+```
+
+\newpage
+
+# `r Country` 
+
+## Public health and social measures
+
+```{r, fig.width=9.5, fig.height=6, echo=FALSE, warning=FALSE, comment=FALSE, message=FALSE}
+PHSMChart(SeverityExcel,Country)
+```
+
+\newpage
+
+# `r Country` 
+
+## Subnational analysis
+
+\newpage
+
+# `r Country` 
+
+## Vaccination overview
