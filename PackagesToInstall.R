@@ -4,9 +4,10 @@
 Packages_CRAN<-c('stats','ggplot2','hablar','devtools','readxl','Rcpp','zoo','dplyr','tidyr','httr','jsonlite','lubridate','cowplot','stringr','stats','imputeTS')
 Packages_Custom<-c('WHOCountryNames',
                    'RtChart',
+                   'GetEpiData',
                    'BuildExtendedEpiDataset',
                    'SpaguettiPlot',
-                   'ReadSeverityExcel','GetEpiData','PHSMChart','TableIndicators')
+                   'ReadSeverityExcel','PHSMChart','TableIndicators')
 
 for (i in Packages_CRAN) {
   print(i)

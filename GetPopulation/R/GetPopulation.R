@@ -23,19 +23,22 @@ GetPopulation<-function(){
     out <- tryCatch(
       {
         # Get the maximum id. This is need to define the number of calls required to fetch data
-        res <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
+        res <- content(GET(url = paste('https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services',
+                                       'EURO_COVID19_ADM0_Cases',"FeatureServer",layer_id,"query?",sep="/"),
                            query = list(
                              where = w,
                              returnGeometry = rg,
                              returnIdsOnly = TRUE,
                              f = "json"),
-                           as = "text", encoding = "UTF-8")) %>%
-          fromJSON(., flatten = TRUE)
+                           as = "text", encoding = "UTF-8"))
 
-        n_records <- res %>% .[2] %>%  as.data.frame(.) %>%#get second list and convert into a data frame
-          summarise(max_id=max(.[1]), count=n())
+        id_field <- res$objectIdFieldName # if fails use this res[[1]]
 
-        id_field <- unlist(res[1])
+
+
+        n_records <- list()
+        n_records$max_id <- unlist(res[[2]]) %>% max()
+        n_records$count <- length(res[[2]])
 
 
         # Do until all records are exported
@@ -44,7 +47,8 @@ GetPopulation<-function(){
         data <- tibble()
         while (id<n_records$max_id) {
 
-          records <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
+          records <- content(GET(url = paste('https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services',
+                                             'EURO_COVID19_ADM0_Cases',"FeatureServer",layer_id,"query?",sep="/"),
                                  query = list(
                                    where = paste(w,"and",id_field,">=",id) ,
                                    returnGeometry = rg,
@@ -80,14 +84,14 @@ GetPopulation<-function(){
       })
   }
 
-server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
-adm_0 <- "EURO_COVID19_ADM0_Cases"
+  server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
+  adm_0 <- "EURO_COVID19_ADM0_Cases"
 
-country_pop <- get_data(server, adm_0) %>%
-  select(ADM0_NAME,WHO_CODE,Population=CENTER_LAT) %>%
-  mutate(ADM0_NAME=str_to_title(ADM0_NAME))
+  country_pop <- get_data(server, adm_0) %>%
+    select(ADM0_NAME,WHO_CODE,Population=CENTER_LAT) %>%
+    mutate(ADM0_NAME=str_to_title(ADM0_NAME))
 
-country_pop <- WHOCountryNames(country_pop,ADM0_NAME)
+  country_pop <- WHOCountryNames(country_pop,ADM0_NAME)
 
 return(country_pop)
 }
