@@ -5,7 +5,7 @@
 
 
 GetEpiData <- function(){
-  get_data<-function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
+  get_data <- function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
     #gets data from an Esri feature service.
     #
     # args:
@@ -22,6 +22,7 @@ GetEpiData <- function(){
 
     out <- tryCatch(
       {
+        # Get the maximum id. This is need to define the number of calls required to fetch data
         res <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
                            query = list(
                              where = w,
@@ -79,10 +80,13 @@ GetEpiData <- function(){
       })
   }
 
-  server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
-  adm_0 <- "EURO_COVID19_Running_v3"
 
-  data <- get_data(server, service_name=adm_0)
+  server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
+  service_daily <- "EURO_COVID19_Running_v3"
+  service_type <- "FeatureServer"
+
+  data<-get_data(server, service_daily) #%>%
+    #select(WHO_CODE,ADM0NAME,DateReport,NewCases,NewDeaths,TotalCases,TotalDeaths)
 
   return(data)
 
