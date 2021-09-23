@@ -22,23 +22,19 @@ GetEpiData <- function(){
 
     out <- tryCatch(
       {
-        # Get the maximum id. This is need to define the number of calls required to fetch data
-        res <- content(GET(url = paste('https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services',
-                                       'EURO_COVID19_Running_v3',"FeatureServer",layer_id,"query?",sep="/"),
+        res <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
                            query = list(
                              where = w,
                              returnGeometry = rg,
                              returnIdsOnly = TRUE,
                              f = "json"),
-                           as = "text", encoding = "UTF-8"))
+                           as = "text", encoding = "UTF-8")) %>%
+          fromJSON(., flatten = TRUE)
 
-        id_field <- res$objectIdFieldName # if fails use this res[[1]]
+        n_records <- res %>% .[2] %>%  as.data.frame(.) %>%#get second list and convert into a data frame
+          summarise(max_id=max(.[1]), count=n())
 
-
-
-        n_records <- list()
-        n_records$max_id <- unlist(res[[2]]) %>% max()
-        n_records$count <- length(res[[2]])
+        id_field <- unlist(res[1])
 
 
         # Do until all records are exported
@@ -47,8 +43,7 @@ GetEpiData <- function(){
         data <- tibble()
         while (id<n_records$max_id) {
 
-          records <- content(GET(url = paste('https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services',
-                                             'EURO_COVID19_Running_v3',"FeatureServer",layer_id,"query?",sep="/"),
+          records <- content(GET(url = paste(server,service_name,service_type,layer_id,"query?",sep="/"),
                                  query = list(
                                    where = paste(w,"and",id_field,">=",id) ,
                                    returnGeometry = rg,
@@ -78,16 +73,16 @@ GetEpiData <- function(){
       },
       error = function(cond) {
         message(paste0("Request failed. Please review the paramaters."))
-        #message(request$status_code)
+        message(request$status_code)
         message(cond)
 
       })
   }
 
-  #server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
-  #adm_0 <- "EURO_COVID19_Running_v3"
+  server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
+  adm_0 <- "EURO_COVID19_Running_v3"
 
-  #data
+  data <- get_data(server, service_name=adm_0)
 
   return(data)
 
