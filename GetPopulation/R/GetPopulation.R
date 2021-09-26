@@ -5,7 +5,7 @@
 
 
 GetPopulation<-function(){
-  get_data <- function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
+  get_data<-function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
     #gets data from an Esri feature service.
     #
     # args:
@@ -29,13 +29,15 @@ GetPopulation<-function(){
                              returnGeometry = rg,
                              returnIdsOnly = TRUE,
                              f = "json"),
-                           as = "text", encoding = "UTF-8")) %>%
-          fromJSON(., flatten = TRUE)
+                           as = "text", encoding = "UTF-8"))
 
-        n_records <- res %>% .[2] %>%  as.data.frame(.) %>%#get second list and convert into a data frame
-          summarise(max_id=max(.[1]), count=n())
+        id_field <- res$objectIdFieldName # if fails use this res[[1]]
 
-        id_field <- unlist(res[1])
+
+
+        n_records <- list()
+        n_records$max_id <- unlist(res[[2]]) %>% max()
+        n_records$count <- length(res[[2]])
 
 
         # Do until all records are exported
@@ -44,7 +46,7 @@ GetPopulation<-function(){
         data <- tibble()
         while (id<n_records$max_id) {
 
-          records <- content(GET(url = paste(server,service_name,service_type,layer_id,"query?",sep="/"),
+          records <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
                                  query = list(
                                    where = paste(w,"and",id_field,">=",id) ,
                                    returnGeometry = rg,
@@ -74,7 +76,7 @@ GetPopulation<-function(){
       },
       error = function(cond) {
         message(paste0("Request failed. Please review the paramaters."))
-        message(request$status_code)
+        #message(request$status_code)
         message(cond)
 
       })
@@ -89,5 +91,5 @@ GetPopulation<-function(){
 
   country_pop <- WHOCountryNames(country_pop,ADM0_NAME)
 
-return(country_pop)
+  return(country_pop)
 }
