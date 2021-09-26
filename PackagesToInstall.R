@@ -7,7 +7,7 @@ Packages_Custom<-c('WHOCountryNames',
                    'GetEpiData',
                    'BuildExtendedEpiDataset',
                    'SpaguettiPlot',
-                   'ReadSeverityExcel','PHSMChart','TableIndicators')
+                   'ReadSeverityExcel','PHSMChart','TableIndicators','GetPopulation')
 
 for (i in Packages_CRAN) {
   print(i)
