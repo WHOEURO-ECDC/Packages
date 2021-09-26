@@ -3,9 +3,8 @@
 #' @export
 #'
 
-
-GetEpiData <- function(){
-  get_data <- function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
+GetEpiData<-function(){
+  get_data<-function(server,service_name,layer_id=0,w="1=1",rg="false",of="*"){
     #gets data from an Esri feature service.
     #
     # args:
@@ -29,13 +28,15 @@ GetEpiData <- function(){
                              returnGeometry = rg,
                              returnIdsOnly = TRUE,
                              f = "json"),
-                           as = "text", encoding = "UTF-8")) %>%
-          fromJSON(., flatten = TRUE)
+                           as = "text", encoding = "UTF-8"))
 
-        n_records <- res %>% .[2] %>%  as.data.frame(.) %>%#get second list and convert into a data frame
-          summarise(max_id=max(.[1]), count=n())
+        id_field <- res$objectIdFieldName # if fails use this res[[1]]
 
-        id_field <- unlist(res[1])
+
+
+        n_records <- list()
+        n_records$max_id <- unlist(res[[2]]) %>% max()
+        n_records$count <- length(res[[2]])
 
 
         # Do until all records are exported
@@ -44,7 +45,7 @@ GetEpiData <- function(){
         data <- tibble()
         while (id<n_records$max_id) {
 
-          records <- content(GET(url = paste(server,service_name,service_type,layer_id,"query?",sep="/"),
+          records <- content(GET(url = paste(server,service_name,"FeatureServer",layer_id,"query?",sep="/"),
                                  query = list(
                                    where = paste(w,"and",id_field,">=",id) ,
                                    returnGeometry = rg,
@@ -74,17 +75,20 @@ GetEpiData <- function(){
       },
       error = function(cond) {
         message(paste0("Request failed. Please review the paramaters."))
-        message(request$status_code)
+        #message(request$status_code)
         message(cond)
 
       })
   }
-    server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
-    service_daily <- "EURO_COVID19_Running_v3"
 
-    MainDataset<-get_data(server, service_daily)
+  server <- "https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services"
+  name <- "EURO_COVID19_Running_v3"
 
-    return(MainDataset)
+  epi_data <- get_data(server, name)
+
+  #country_pop <- WHOCountryNames(country_pop,ADM0_NAME)
+
+  return(epi_data)
 }
 
 
