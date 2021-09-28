@@ -34,7 +34,7 @@ SummaryTable<-function(dataset){
     WHOCountryNames(ADM0NAME)
 
 
-  Dataset_GlobalPopulation <- GetPopulationNew() %>% rename(ADM0NAME=ADM0_NAME)
+  Dataset_GlobalPopulation <- GetPopulationNew() %>% rename(ADM0NAME=ADM0_NAME) %>% WHOCountryNames(ADM0NAME)
 
   #This will need to change at some point
   Dataset_LastReportingDate<-data.frame(ADM0NAME=unique(EuroDataset$ADM0NAME),
