@@ -9,7 +9,7 @@
 
 SummaryTable<-function(dataset){
 
-  EuroDataset<-GetEpiData() %>%
+  EuroDataset<-GetEpiDataNew() %>%
     mutate(DateReport=as.Date(DateReport),ADM0NAME=str_to_title(ADM0NAME))
 
   Dataset_Epiforecast_ <- read.csv("https://raw.githubusercontent.com/epiforecasts/covid-rt-estimates/master/national/cases/summary/rt.csv") %>%
