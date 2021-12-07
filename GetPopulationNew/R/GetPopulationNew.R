@@ -13,7 +13,7 @@ GetPopulationNew<-function(){
                     f = "geojson")
   request <- build_url(url)
   PopulationData <- st_read(request) %>% 
-    #%>% st_drop_geometry() %>% 
+    st_drop_geometry() %>% 
     select(ADM0_NAME,WHO_CODE,Population=CENTER_LAT) %>%
     mutate(ADM0_NAME=str_to_title(ADM0_NAME))
   
