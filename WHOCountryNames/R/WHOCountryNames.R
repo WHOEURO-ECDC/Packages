@@ -17,14 +17,15 @@ WHOCountryNames <- function(dataset,countryfield) {
                                      !!countryfield=='Moldova' ~ 'Republic Of Moldova',
                                      !!countryfield=='Russia' ~ 'Russian Federation',
                                      !!countryfield=='Russian Fed.' ~ 'Russian Federation',
+                                     !!countryfield=='Russian Fed' ~ 'Russian Federation',
                                      !!countryfield=='UK' ~ 'United Kingdom',
                                      !!countryfield=='Bosnia & Herzegovina' ~ 'Bosnia And Herzegovina',
                                      !!countryfield=='United Kingdom Of Great Britain And Northern Ireland' ~ 'United Kingdom',
                                      !!countryfield=='Kosovo[1]' ~ 'Kosovo',
                                      !!countryfield=='Kosovo(1)' ~ 'Kosovo',
+                                     !!countryfield=='Kosovo*' ~ 'Kosovo',
                                      !!countryfield=='Kyrgystan' ~ 'Kyrgyzstan',
                                      !!countryfield=='United Kingdom' ~ 'The United Kingdom'))
-
   return(NewDataset)
 }
 
