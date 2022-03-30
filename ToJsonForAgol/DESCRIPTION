@@ -1,0 +1,16 @@
+Package: ToJsonForAgol
+Title: Converts to Json (Agol friendly)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Céline",
+           family = "Roman",
+           role = c("aut", "cre"),
+           email = "romanc@who.int",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Converts any dataset into a json format that's readable by Arcgis Online
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
