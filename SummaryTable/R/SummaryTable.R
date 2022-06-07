@@ -10,10 +10,14 @@
 SummaryTable<-function(dataset){
 
   EuroDataset<-GetEpiDataNew() %>%
-    mutate(DateReport=as.Date(DateReport),ADM0NAME=str_to_title(ADM0NAME))
+    mutate(DateReport=as.Date(DateReport),ADM0NAME=str_to_title(ADM0NAME)) %>% 
+    WHOCountryNames(ADM0NAME)
+    
 
   Dataset_Epiforecast_ <- read.csv("https://raw.githubusercontent.com/epiforecasts/covid-rt-estimates/master/national/cases/summary/rt.csv") %>%
-    filter(type=='estimate')
+    filter(type=='estimate') %>% 
+    WHOCountryNames(country)
+
 
   Rt_country<-function(ctr){
     Dataset_Epiforecast_Country<-Dataset_Epiforecast_ %>% filter(country==ctr)
@@ -31,10 +35,12 @@ SummaryTable<-function(dataset){
   Dataset_Epiforecast <- GlobalRtDataset %>%
     select(ADM0NAME="country", Last_Update='date',RO='median',CI_low='lower_90', CI_up='upper_90') %>%
     mutate(Trend=if_else(CI_low<1 & CI_up<1,"Decreasing",if_else(CI_low<=1 & CI_up>=1,"Stable","Increasing"))) %>%
-    WHOCountryNames(ADM0NAME)
+    WHOCountryNames(ADM0NAME) 
 
 
-  Dataset_GlobalPopulation <- GetPopulationNew() %>% rename(ADM0NAME=ADM0_NAME) %>% WHOCountryNames(ADM0NAME)
+  Dataset_GlobalPopulation <- GetPopulationNew() %>% rename(ADM0NAME=ADM0_NAME) %>% 
+    WHOCountryNames(ADM0NAME) 
+    
 
   #This will need to change at some point
   Dataset_LastReportingDate<-data.frame(ADM0NAME=unique(EuroDataset$ADM0NAME),
