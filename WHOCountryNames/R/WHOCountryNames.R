@@ -12,7 +12,7 @@ WHOCountryNames <- function(dataset,countryfield) {
   countryfield <- enquo(countryfield)
   NewDataset<-dataset %>%
     mutate(!!countryfield:=str_to_title(!!countryfield)) %>%
-    mutate(!!countryfield:=case_when(!!countryfield %in% who_names$ADM0NAME ~ !!countryfield,
+    mutate(!!countryfield:=case_when(!!countryfield %in% who_names$SOVEREIGNNAME ~ !!countryfield,
                                      !!countryfield=='Czechia' ~ 'Czech Republic',
                                      !!countryfield=='Moldova' ~ 'Republic Of Moldova',
                                      !!countryfield=='Russia' ~ 'Russian Federation',
