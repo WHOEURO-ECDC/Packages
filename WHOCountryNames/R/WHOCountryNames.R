@@ -6,13 +6,14 @@
 
 WHOCountryNames <- function(dataset,countryfield) {
 
-  who_names<-WHO_ref %>% select(SOVEREIGNNAME) %>%
-    mutate(SOVEREIGNNAME=str_to_title(SOVEREIGNNAME))
+  who_names<-WHO_ref %>% select(ADM0NAME) %>%
+    mutate(ADM0NAME=str_to_title(ADM0NAME))
+    
 
   countryfield <- enquo(countryfield)
   NewDataset<-dataset %>%
     mutate(!!countryfield:=str_to_title(!!countryfield)) %>%
-    mutate(!!countryfield:=case_when(!!countryfield %in% who_names$SOVEREIGNNAME ~ !!countryfield,
+    mutate(!!countryfield:=case_when(!!countryfield %in% who_names$ADM0NAME ~ !!countryfield,
                                      !!countryfield=='Czechia' ~ 'Czech Republic',
                                      !!countryfield=='Moldova' ~ 'Republic Of Moldova',
                                      !!countryfield=='Russia' ~ 'Russian Federation',
@@ -25,8 +26,8 @@ WHOCountryNames <- function(dataset,countryfield) {
                                      !!countryfield=='Kosovo(1)' ~ 'Kosovo',
                                      !!countryfield=='Kosovo*' ~ 'Kosovo',
                                      !!countryfield=='Kyrgystan' ~ 'Kyrgyzstan',
-                                     !!countryfield=='United Kingdom' ~ 'The United Kingdom'
-                                     #!!countryfield=='Turkey' ~ 'Turkiye'
+                                     !!countryfield=='United Kingdom' ~ 'The United Kingdom',
+                                     !!countryfield=='Turkey' ~ 'Türkiye'
                                      ))
   return(NewDataset)
 }
