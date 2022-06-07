@@ -6,8 +6,8 @@
 
 WHOCountryNames <- function(dataset,countryfield) {
 
-  who_names<-WHO_ref %>% select(ADM0NAME) %>%
-    mutate(ADM0NAME=str_to_title(ADM0NAME))
+  who_names<-WHO_ref %>% select(SOVEREIGNNAME) %>%
+    mutate(SOVEREIGNNAME=str_to_title(SOVEREIGNNAME))
 
   countryfield <- enquo(countryfield)
   NewDataset<-dataset %>%
