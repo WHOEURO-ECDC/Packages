@@ -3,7 +3,6 @@
 #' @export
 #' 
 
-
 GetEpiDataNew<-function(){
   url <- parse_url("https://services.arcgis.com/5T5nSi527N4F7luB/ArcGIS/rest/services")
   url$path <- paste(url$path, "EURO_COVID19_Running_v3/FeatureServer/0/query", sep = "/")
@@ -13,6 +12,8 @@ GetEpiDataNew<-function(){
                     f = "geojson")
   request <- build_url(url)
   EpiData <- st_read(request) %>% st_drop_geometry() %>% 
-    mutate(DateReport=as.Date(format(as.POSIXct(DateReport/1000, origin="1970-01-01"),'%Y-%m-%d'))) 
+    mutate(DateReport=as.Date(format(as.POSIXct(DateReport/1000, origin="1970-01-01"),'%Y-%m-%d'))) %>% 
+    mutate(ADM0NAME=str_to_title(ADM0NAME)) %>% 
+    WHOCountryNames(ADM0NAME)
 }
 

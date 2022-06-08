@@ -17,4 +17,6 @@ RoxygenNote: 7.1.2
 Depends: 
     dplyr,
     httr,
-    sf
+    sf,
+    stringr,
+    WHOCountryNames
