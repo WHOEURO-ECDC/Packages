@@ -8,7 +8,7 @@
 
 
 SeverityPerCountry<-function(infile,country){
-  df <- read_excel(infile, sheet = country,col_names=FALSE) #DataFrame
+  df <- openxlsx::read.xlsx(infile, sheet = country) #DataFrame
   dft <- t(df) #Dataframe has become a character matrix due to transposition
   colnames(dft) <- dft[1,] #Rewriting the column names
   colnames(dft)<-make.names(colnames(dft)) #Make sure column names are in acceptable format, no special character, no space,...
@@ -16,7 +16,14 @@ SeverityPerCountry<-function(infile,country){
   Severity<-dft[,c("X1.4_IND","X4.1_IND","X4.2_IND","X4.3_IND","X4.5_IND","X5_IND","PHSM.SI","Date")] #Selects only fields we are interested in
   Severity<-as.data.frame(Severity) %>% mutate(Date=as.numeric(Date)) %>%
     mutate(Date=as.Date(Date,origin = "1899-12-30")) %>%
-    convert(num("X1.4_IND","X4.1_IND","X4.2_IND","X4.3_IND","X4.5_IND","X5_IND","PHSM.SI"))
+    mutate(X1.4_IND=as.numeric(X1.4_IND),
+           X4.1_IND=as.numeric(X4.1_IND),
+           X4.2_IND=as.numeric(X4.2_IND),
+           X4.3_IND=as.numeric(X4.3_IND),
+           X4.5_IND=as.numeric(X4.5_IND),
+           X5_IND=as.numeric(X5_IND),
+           PHSM.SI=as.numeric(PHSM.SI))
+    #convert(num("X1.4_IND","X4.1_IND","X4.2_IND","X4.3_IND","X4.5_IND","X5_IND","PHSM.SI"))
   #Retransforms the matrix in a dataframe where different types of data are allowed, converts characters into dates or numbers
   Severity$ADM0NAME<-country #Creates new field with country name as the final aim is to have a global dataset with all countries
   Severity<-Severity %>% select(
@@ -44,10 +51,11 @@ SeverityPerCountry<-function(infile,country){
 #' SeverityForAllCountries()
 
 SeverityForAllCountries<-function(infile){
-  ListCountries<-excel_sheets(infile)
+  ListCountries<-readxl::excel_sheets(infile)
   ListCountries<-ListCountries[!grepl('Sheet', ListCountries)]
   Severity<-data.frame()
   for (country in ListCountries){
+    print(country)
     Severity_<-SeverityPerCountry(infile,country)
     Severity<-bind_rows(Severity,Severity_)
   }
