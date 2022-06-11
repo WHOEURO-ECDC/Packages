@@ -1,13 +1,14 @@
 #Packages needed to use all of these packages
 #Some custom packages make use of other custom packages, important to have them all downloaded
 
-Packages_CRAN<-c('stats','ggplot2','hablar','devtools','readxl','Rcpp','zoo','dplyr','tidyr','httr','jsonlite','lubridate','cowplot','stringr','stats','imputeTS')
+Packages_CRAN<-c('stats','ggplot2','hablar','openxlsx','devtools','readxl','Rcpp','zoo','dplyr','tidyr','httr','jsonlite','lubridate','cowplot','stringr','stats','imputeTS')
 Packages_Custom<-c('WHOCountryNames',
                    'RtChart',
                    'GetEpiData',
                    'BuildExtendedEpiDataset',
                    'SpaguettiPlot',
-                   'ReadSeverityExcel','PHSMChart','TableIndicators','GetPopulation')
+                   'ReadSeverityExcel','PHSMChart','TableIndicators','GetPopulationNew',
+                   'ToJsonForAgol','GetEpiDataNew')
 
 for (i in Packages_CRAN) {
   print(i)
